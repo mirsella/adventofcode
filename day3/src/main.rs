@@ -38,18 +38,20 @@ fn count_gear_ratio(s: &str) -> usize {
     for m in matches {
         let (i, _) = m;
         let adjacent_index = [
-            (i - 1..i + 2),
-            (i - line_length - 1..i - line_length + 2),
-            (i + line_length - 1..i + line_length + 2),
+            i - 1,
+            i,
+            i + 1,
+            i - line_length - 1,
+            i - line_length,
+            i - line_length + 1,
+            i + line_length - 1,
+            i + line_length,
+            i + line_length + 1,
         ];
-        let adjacent_index = adjacent_index
-            .into_iter()
-            .flat_map(|r| r.collect::<Vec<_>>());
         let mut nums = vec![];
         for digit in &digits {
-            assert_eq!(adjacent_index.clone().count(), 9);
             let validdigit = adjacent_index
-                .clone()
+                .into_iter()
                 .any(|i| digit.start() == i || digit.end() - 1 == i);
             if validdigit {
                 nums.push(digit.as_str().parse::<usize>().unwrap());
