@@ -1,11 +1,20 @@
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Clone)]
 struct Card {
+    pub id: usize,
     pub winnings: Vec<i32>,
     pub nums: Vec<i32>,
 }
 impl Card {
     pub fn parse(line: &str) -> Self {
-        let mut s = line.split(&[':', '|']).skip(1);
+        let mut s = line.split(&[':', '|']);
+        let id = s
+            .next()
+            .unwrap()
+            .split_whitespace()
+            .nth(1)
+            .unwrap()
+            .parse()
+            .unwrap();
         let winnings = s
             .next()
             .unwrap()
@@ -18,7 +27,7 @@ impl Card {
             .split_whitespace()
             .map(|s| s.parse().unwrap())
             .collect();
-        Card { winnings, nums }
+        Card { id, winnings, nums }
     }
     pub fn winnings_nums(&self) -> Vec<i32> {
         self.nums
@@ -32,6 +41,7 @@ impl Card {
 fn main() {
     let input = include_str!("../input.txt");
     println!("part1: {}", part1(input));
+    println!("part2: {}", part2(input));
 }
 
 fn part1(input: &str) -> usize {
@@ -46,6 +56,19 @@ fn part1(input: &str) -> usize {
     sum.sum()
 }
 
+fn part2(input: &str) -> usize {
+    let cards: Vec<_> = input.lines().map(Card::parse).collect();
+    let mut copied_cards = vec![1; cards.len()];
+    for card in cards {
+        let ccard = copied_cards[card.id - 1];
+        let count = card.winnings_nums().len();
+        for i in 0..count {
+            copied_cards[card.id + i] += ccard;
+        }
+    }
+    copied_cards.iter().sum()
+}
+
 #[cfg(test)]
 mod tests {
     const INPUT: &str = "Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53
@@ -58,5 +81,9 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11";
     #[test]
     fn part1_example() {
         assert_eq!(super::part1(INPUT), 13);
+    }
+    #[test]
+    fn part2_example() {
+        assert_eq!(super::part2(INPUT), 30);
     }
 }
