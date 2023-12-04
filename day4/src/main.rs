@@ -1,4 +1,3 @@
-#[derive(Default, Debug, Clone)]
 struct Card {
     pub id: usize,
     pub winnings: Vec<i32>,
