@@ -6,7 +6,8 @@ fn get_calibration1(s: &str) -> u32 {
     first * 10 + last
 }
 
-/// don't work for things like sevenine as regex is not overlapping...
+/// don't work for things like sevenine as Regex crate is not overlapping...
+/// found out after day3 that the fancy-regex crate which support this exist....
 // fn get_calibration2(s: &str) -> u32 {
 //     let get_number = |s: &str| -> u32 {
 //         match s {
@@ -54,8 +55,8 @@ fn main() {
     let input1 = include_str!("../input1.txt");
     let sum1: u32 = input1.lines().map(get_calibration1).sum();
     let sum2: u32 = input1.lines().map(get_calibration2).sum();
-    dbg!(sum1);
-    dbg!(sum2);
+    println!("part1: {sum1}");
+    println!("part2: {sum2}");
 }
 
 #[cfg(test)]
