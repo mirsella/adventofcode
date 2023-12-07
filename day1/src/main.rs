@@ -52,7 +52,7 @@ fn get_calibration2(s: impl Into<String>) -> u32 {
 }
 
 fn main() {
-    let input1 = include_str!("../input1.txt");
+    let input1 = include_str!("../input.txt");
     let sum1: u32 = input1.lines().map(get_calibration1).sum();
     let sum2: u32 = input1.lines().map(get_calibration2).sum();
     println!("part1: {sum1}");
