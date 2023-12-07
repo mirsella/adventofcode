@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - name: Create empty input.txt for compilation
-        run: for d in ${{matrix.folder}}/day*; do touch ${{matrix.folder}}/$d/input.txt; done
+        run: for d in ${{matrix.folder}}/day*; do touch $d/input.txt; done
       - name: Cargo Test
         run: |
           cd ${{ matrix.folder }}
