@@ -51,6 +51,9 @@ JJJJ2 41";
     #[test]
     fn part2_example() {
         assert_eq!(super::run(INPUT), 5905);
+    }
+    #[test]
+    fn part2_reddit_example() {
         assert_eq!(super::run(INPUT2), 6839);
     }
 }
