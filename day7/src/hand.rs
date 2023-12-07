@@ -107,9 +107,15 @@ fn find_suit(cards: &[Card; 5]) -> Suit {
     } else if h.values().any(|&v| v + j >= 4) {
         Suit::FourOfAKind
     } else if h.values().any(|&v| {
-        let mut jused = 0;
-        jused += 3usize.saturating_sub(v);
-        todo!()
+        if v + j >= 3 {
+            j -= 3 - v
+        } else {
+            return false;
+        }
+        if h.values().any(|&v| v + j >= 2) {
+            return true;
+        }
+        false
     }) {
         Suit::FullHouse
     } else if h.values().any(|&v| v + j >= 3) {
