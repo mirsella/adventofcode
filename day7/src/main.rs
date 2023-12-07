@@ -1,8 +1,18 @@
 mod hand;
-use hand::*;
+mod handjoker;
 
-fn run(input: &str) -> usize {
-    let mut hands = input.lines().map(Hand::from).collect::<Vec<_>>();
+fn part1(input: &str) -> usize {
+    let mut hands = input.lines().map(hand::Hand::from).collect::<Vec<_>>();
+    hands.sort();
+    // dbg!(&hands);
+    let mut sum = 0;
+    for (i, hand) in hands.iter().enumerate() {
+        sum += hand.bet * (i + 1);
+    }
+    sum
+}
+fn part2(input: &str) -> usize {
+    let mut hands = input.lines().map(handjoker::Hand::from).collect::<Vec<_>>();
     hands.sort();
     // dbg!(&hands);
     let mut sum = 0;
@@ -13,7 +23,8 @@ fn run(input: &str) -> usize {
 }
 fn main() {
     let input = include_str!("../input.txt");
-    println!("{}", run(input));
+    println!("part1: {}", part1(input));
+    println!("part2: {}", part2(input));
 }
 
 #[cfg(test)]
@@ -46,14 +57,14 @@ AAAAA 61
 JJJJ2 41";
     #[test]
     fn part1_example() {
-        assert_eq!(super::run(INPUT), 6440);
+        assert_eq!(super::part1(INPUT), 6440);
     }
     #[test]
     fn part2_example() {
-        assert_eq!(super::run(INPUT), 5905);
+        assert_eq!(super::part2(INPUT), 5905);
     }
     #[test]
     fn part2_reddit_example() {
-        assert_eq!(super::run(INPUT2), 6839);
+        assert_eq!(super::part2(INPUT2), 6839);
     }
 }

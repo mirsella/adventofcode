@@ -2,6 +2,7 @@ use std::{array::from_fn, cmp::Ordering, collections::HashMap};
 
 #[derive(Debug, PartialEq, PartialOrd, Hash, Eq, Copy, Clone)]
 pub enum Card {
+    J,
     Two,
     Three,
     Four,
@@ -11,7 +12,6 @@ pub enum Card {
     Eight,
     Nine,
     T,
-    J,
     Q,
     K,
     A,
@@ -92,30 +92,27 @@ impl Ord for Hand {
     }
 }
 
-/// From strongest to weakest, they are:
-/// Five of a kind, where all five cards have the same label: AAAAA
-/// Four of a kind, where four cards have the same label and one card has a different label: AA8AA
-/// Full house, where three cards have the same label, and the remaining two cards share a different label: 23332
-/// Three of a kind, where three cards have the same label, and the remaining two cards are each different from any other card in the hand: TTT98
-/// Two pair, where two cards share one label, two other cards share a second label, and the remaining card has a third label: 23432
-/// One pair, where two cards share one label, and the other three cards have a different label from the pair and each other: A23A4
-/// High card, where all cards' labels are distinct: 23456
 fn find_suit(cards: &[Card; 5]) -> Suit {
     let mut h = HashMap::new();
     for card in cards.iter() {
         *h.entry(card).or_insert(0) += 1;
     }
-    if h.values().any(|&v| v == 5) {
+    let j: usize = h.get(&Card::J).copied().unwrap_or(0);
+    h.remove(&Card::J);
+    if h.values().any(|&v| v + j == 5) || j == 5 {
         Suit::FiveOfAKind
-    } else if h.values().any(|&v| v == 4) {
+    } else if h.values().any(|&v| v + j == 4) {
         Suit::FourOfAKind
-    } else if h.values().any(|&v| v == 3) && h.values().any(|&v| v == 2) {
+    } else if h
+        .iter()
+        .any(|(&c, &v)| v + j == 3 && h.iter().any(|(&c2, &v2)| c2 != c && v2 == 2))
+    {
         Suit::FullHouse
-    } else if h.values().any(|&v| v == 3) {
+    } else if h.values().any(|&v| v + j == 3) {
         Suit::ThreeOfAKind
-    } else if h.values().filter(|&&v| v == 2).count() == 2 {
+    } else if h.values().filter(|&&v| v == 2).count() + j >= 2 {
         Suit::TwoPair
-    } else if h.values().any(|&v| v == 2) {
+    } else if h.values().any(|&v| v + j == 2) {
         Suit::OnePair
     } else {
         Suit::HighCard
