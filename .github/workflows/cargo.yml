@@ -6,10 +6,17 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false
+      matrix:
+        folder: [2023]
+
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - name: Create empty input.txt for compilation
-        run: for d in day*; do touch $d/input.txt; done
+        run: for d in ${{matrix.folder}}day*; do touch ${{matrix.folder}}$d/input.txt; done
       - name: Cargo Test
-        run: cargo test --workspace
+        run: |
+          cd ${{ matrix.folder }}
+          cargo test --workspace
