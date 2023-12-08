@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use num::integer::lcm;
+
 enum Direction {
     Left,
     Right,
@@ -63,48 +65,34 @@ fn part1(input: &str) -> usize {
     }
     count
 }
+
+/// from the subreddit, we can use the LCM algorithm (couldn't figure it out myself this time)
 fn part2(input: &str) -> usize {
     let map = Map::parse(input);
-    let mut currents = map
+    let currents = map
         .network
         .keys()
         .filter(|k| k.ends_with('A'))
         .copied()
         .collect::<Vec<_>>();
-    let mut directions = map.directions.iter().cycle();
-    let mut count: usize = 0;
-    while !currents.iter().all(|c| c.ends_with('Z')) {
-        let direction = directions.next().unwrap();
-        for current in currents.iter_mut() {
+    let mut lowest: usize = 0;
+    for mut current in currents {
+        let mut directions = map.directions.iter().cycle();
+        let mut count = 0;
+        while !current.ends_with('Z') {
             let node = map.network.get(current).unwrap();
-            match direction {
-                Direction::Left => *current = node.0,
-                Direction::Right => *current = node.1,
-            }
-            if current.ends_with('Z') {
-                println!("{}: {}", count, current);
+            count += 1;
+            match directions.next().unwrap() {
+                Direction::Left => current = node.0,
+                Direction::Right => current = node.1,
             }
         }
-        count += 1;
+        match lowest {
+            0 => lowest = count,
+            _ => lowest = lcm(lowest, count),
+        }
     }
-
-    // let mut gcount: usize = 0;
-    // for mut current in currents {
-    //     let mut directions = map.directions.iter().cycle();
-    //     let mut count = 0;
-    //     while !current.ends_with('Z') {
-    //         let node = map.network.get(current).unwrap();
-    //         count += 1;
-    //         match directions.next().unwrap() {
-    //             Direction::Left => current = node.0,
-    //             Direction::Right => current = node.1,
-    //         }
-    //     }
-    //     println!("count: {}", count);
-    //     gcount += count;
-    // }
-    // gcount
-    count
+    lowest
 }
 fn main() {
     let input = include_str!("../input.txt");
