@@ -1,0 +1,14 @@
+[placeholders.input]
+type = "string"
+prompt = "main puzzle input"
+regex = "[^ ]"
+
+[placeholders.example]
+type = "string"
+prompt = "example input test case"
+regex = "[^ ]"
+
+[placeholders.example_eq]
+type = "string"
+prompt = "example input equal to"
+regex = "[0-9]+"
