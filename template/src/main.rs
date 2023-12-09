@@ -12,13 +12,13 @@ fn main() {
 
 #[cfg(test)]
 mod tests {
-    const INPUT: &str = "{{example}}";
+    const INPUT: &str = "";
     #[test]
     fn part1() {
-        assert_eq!(super::part1(INPUT), {{example_eq}});
+        assert_eq!(super::part1(INPUT), todo!());
     }
     #[test]
     fn part2() {
-        assert_eq!(super::part2(INPUT), {{example_eq}});
+        assert_eq!(super::part2(INPUT), todo!());
     }
 }
