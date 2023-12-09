@@ -1,0 +1,5 @@
+[package]
+name = "day9"
+authors = ["mirsella <mirsella@protonmail.com>"]
+version = "0.1.0"
+edition = "2021"
