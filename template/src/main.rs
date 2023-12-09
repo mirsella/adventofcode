@@ -1,7 +1,7 @@
-fn part1() -> usize {
+fn part1(input: &str) -> usize {
     todo!()
 }
-fn part2() -> usize {
+fn part2(input: &str) -> usize {
     todo!()
 }
 fn main() {
