@@ -7,7 +7,10 @@ fn replace_in_file(file_path: &PathBuf, old: &str, new: &str) -> io::Result<()> 
     let mut contents = String::new();
     File::open(file_path)?.read_to_string(&mut contents)?;
     let new_contents = contents.replace(old, new);
-    fs::write(file_path, new_contents)?;
+    if contents != new_contents {
+        println!("Updating {}", file_path.display());
+        fs::write(file_path, new_contents)?;
+    }
     Ok(())
 }
 
