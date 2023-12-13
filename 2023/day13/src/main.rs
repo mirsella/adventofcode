@@ -1,33 +1,30 @@
 use grid::Grid;
 
-fn find_parallel(vec: &Vec<String>) -> Option<usize> {
-    for i in 1..vec.len() {
-        let mut valid = true;
-        let mut l = i as isize - 1;
-        let mut r = i;
-        while l >= 0 && r < vec.len() {
-            if vec[l as usize] != vec[r] {
-                valid = false;
-                break;
-            }
-            l -= 1;
-            r += 1;
-        }
-        if valid {
-            return Some(i);
-        }
-    }
-    None
+fn find_parallel(iter: impl Iterator<Item = impl PartialEq>) -> Option<usize> {
+    let vec: Vec<_> = iter.into_iter().collect();
+    (1..vec.len()).find(|&i| {
+        (0..i)
+            .rev()
+            .zip(i..vec.len())
+            .all(|(l, r)| vec[l] == vec[r])
+    })
 }
-fn find_parallel_diff(vec: &Vec<String>, diff: usize) -> Option<usize> {
+
+fn find_parallel_diff(
+    iter: impl Iterator<Item = impl AsRef<str> + PartialEq>,
+    diff: usize,
+) -> Option<usize> {
+    let vec: Vec<_> = iter.into_iter().collect();
     let count_char_diff =
         |a: &str, b: &str| a.chars().zip(b.chars()).filter(|(a, b)| a != b).count();
+
     for i in 1..vec.len() {
         let mut d = 0;
         let mut l = i as isize - 1;
         let mut r = i;
+
         while l >= 0 && r < vec.len() && d <= diff {
-            d += count_char_diff(&vec[l as usize], &vec[r]);
+            d += count_char_diff(vec[l as usize].as_ref(), vec[r].as_ref());
             l -= 1;
             r += 1;
         }
@@ -43,15 +40,13 @@ fn part1(input: &str) -> usize {
         .map(|grid| {
             let chars = grid.chars().filter(|&c| c != '\n').collect::<Vec<_>>();
             let grid = Grid::from_vec(chars, grid.find('\n').unwrap());
-            let p = find_parallel(&grid.iter_rows().map(|i| i.collect::<String>()).collect());
-            if let Some(i) = p {
-                return i * 100;
+            if let Some(i) = find_parallel(grid.iter_rows().map(|i| i.collect::<String>())) {
+                i * 100
+            } else if let Some(i) = find_parallel(grid.iter_cols().map(|i| i.collect::<String>())) {
+                i
+            } else {
+                unreachable!()
             }
-            let p = find_parallel(&grid.iter_cols().map(|i| i.collect::<String>()).collect());
-            if let Some(i) = p {
-                return i;
-            }
-            unreachable!()
         })
         .sum()
 }
@@ -61,21 +56,16 @@ fn part2(input: &str) -> usize {
         .map(|grid| {
             let chars = grid.chars().filter(|&c| c != '\n').collect::<Vec<_>>();
             let grid = Grid::from_vec(chars, grid.find('\n').unwrap());
-            let p = find_parallel_diff(
-                &grid.iter_rows().map(|i| i.collect::<String>()).collect(),
-                1,
-            );
-            if let Some(i) = p {
-                return i * 100;
+            if let Some(i) = find_parallel_diff(grid.iter_rows().map(|i| i.collect::<String>()), 1)
+            {
+                i * 100
+            } else if let Some(i) =
+                find_parallel_diff(grid.iter_cols().map(|i| i.collect::<String>()), 1)
+            {
+                i
+            } else {
+                unreachable!()
             }
-            let p = find_parallel_diff(
-                &grid.iter_cols().map(|i| i.collect::<String>()).collect(),
-                1,
-            );
-            if let Some(i) = p {
-                return i;
-            }
-            unreachable!()
         })
         .sum()
 }
