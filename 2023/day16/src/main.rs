@@ -1,8 +1,8 @@
 use grid::Grid;
 use itertools::Itertools;
-use std::{collections::BTreeSet, sync::Arc};
+use std::{collections::HashSet, sync::Arc};
 
-#[derive(Debug, Ord, PartialEq, PartialOrd, Eq, Copy, Clone)]
+#[derive(Debug, Ord, PartialEq, PartialOrd, Eq, Copy, Clone, Hash)]
 enum Direction {
     Up,
     Down,
@@ -21,7 +21,7 @@ impl From<Direction> for (isize, isize) {
     }
 }
 
-fn _print_energized_grid(grid: &Grid<char>, energized: &BTreeSet<(isize, isize, Direction)>) {
+fn _print_energized_grid(grid: &Grid<char>, energized: &HashSet<(isize, isize, Direction)>) {
     let mut grid = grid.clone();
     for (x, y, _) in energized {
         *grid.get_mut(*y as usize, *x as usize).unwrap() = '#';
@@ -35,7 +35,7 @@ fn _print_energized_grid(grid: &Grid<char>, energized: &BTreeSet<(isize, isize, 
 /// x, y current pos, direction the ray was going
 fn fill_ray(
     grid: &Grid<char>,
-    history: &mut BTreeSet<(isize, isize, Direction)>,
+    history: &mut HashSet<(isize, isize, Direction)>,
     x: isize,
     y: isize,
     direction: Direction,
@@ -78,7 +78,7 @@ fn part1(input: &str) -> usize {
         input.chars().filter(|&c| c != '\n').collect(),
         input.find('\n').unwrap(),
     );
-    let mut energized_tiles = BTreeSet::new();
+    let mut energized_tiles = HashSet::new();
     fill_ray(&grid, &mut energized_tiles, 0, 0, Direction::Right);
     // print_energized_grid(&grid, &energized_tiles);
     energized_tiles
@@ -113,7 +113,7 @@ fn part2(input: &str) -> usize {
                 let grid = grid.clone();
                 let direction = *direction;
                 counts.push(std::thread::spawn(move || {
-                    let mut energized_tiles = BTreeSet::new();
+                    let mut energized_tiles = HashSet::new();
                     fill_ray(
                         &grid,
                         &mut energized_tiles,
