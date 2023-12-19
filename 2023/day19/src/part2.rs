@@ -1,6 +1,5 @@
-use std::array;
-
 use crate::types::{Action, Flow};
+use std::array;
 
 fn count_accepted(flows: &[Flow], current: &Action, mut ranges: [Vec<usize>; 4]) -> usize {
     let name = match current {
@@ -16,6 +15,7 @@ fn count_accepted(flows: &[Flow], current: &Action, mut ranges: [Vec<usize>; 4])
         acc + count_accepted(flows, &rule.action, valid)
     }) + count_accepted(flows, &flow.action, ranges)
 }
+
 pub fn part2(input: &str) -> usize {
     let s = input.split_once("\n\n").unwrap();
     let flows = s.0.lines().map(Flow::new).collect::<Vec<_>>();

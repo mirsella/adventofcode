@@ -26,20 +26,12 @@ impl Rule {
         }
     }
 }
+
 #[derive(Clone)]
 pub enum Action {
     Flow(String),
     Rejected,
     Accepted,
-}
-impl AsRef<str> for Action {
-    fn as_ref(&self) -> &str {
-        match self {
-            Action::Flow(s) => s,
-            Action::Rejected => "R",
-            Action::Accepted => "A",
-        }
-    }
 }
 impl Action {
     pub fn new(input: &str) -> Self {
@@ -57,7 +49,6 @@ pub struct Flow {
     pub rules: Vec<Rule>,
     pub action: Action,
 }
-
 impl Flow {
     pub fn new(input: &str) -> Self {
         let mut s = input.split(['{', '}']);
@@ -99,6 +90,7 @@ impl Flow {
         }
     }
 }
+
 pub struct Part {
     pub x: usize,
     pub m: usize,
