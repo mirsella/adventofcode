@@ -8,12 +8,17 @@ fn count_accepted(flows: &[Flow], current: &Action, mut ranges: [Vec<usize>; 4])
         Action::Flow(name) => name,
     };
     let flow = flows.iter().find(|f| &f.name == name).unwrap();
-    flow.rules.iter().fold(0, |acc, rule| {
-        let index = "xmas".find(rule.part).unwrap();
-        let mut valid = ranges.clone();
-        (valid[index], ranges[index]) = ranges[index].iter().partition(|&&val| rule.is_valid(val));
-        acc + count_accepted(flows, &rule.action, valid)
-    }) + count_accepted(flows, &flow.action, ranges)
+    flow.rules
+        .iter()
+        .map(|rule| {
+            let index = "xmas".find(rule.part).unwrap();
+            let mut valid = ranges.clone();
+            (valid[index], ranges[index]) =
+                ranges[index].iter().partition(|&&val| rule.is_valid(val));
+            count_accepted(flows, &rule.action, valid)
+        })
+        .sum::<usize>()
+        + count_accepted(flows, &flow.action, ranges)
 }
 
 pub fn part2(input: &str) -> usize {
