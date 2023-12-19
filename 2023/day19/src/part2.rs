@@ -1,3 +1,7 @@
+use std::array;
+
+use crate::types::Flow;
+
 fn count_accepted(flows: &[Flow], current: &str, mut ranges: [Vec<usize>; 4]) -> usize {
     match current {
         "R" => return 0,

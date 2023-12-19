@@ -1,3 +1,5 @@
+use crate::types::{Action, Flow, Part};
+
 pub fn part1(input: &str) -> usize {
     let s = input.split_once("\n\n").unwrap();
     let flows = s.0.lines().map(Flow::new).collect::<Vec<_>>();
