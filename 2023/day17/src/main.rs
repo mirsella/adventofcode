@@ -32,6 +32,8 @@ fn pathfind(input: &str, min: usize, max: usize) -> usize {
         |pos| pos.0 == (grid.rows - 1, grid.columns - 1) && pos.2 >= min,
     )
     .unwrap();
+
+    // print the grid with the path
     for (x, row) in grid.iter().enumerate() {
         for (y, digit) in row.iter().enumerate() {
             if result.0.iter().any(|p| p.0 == (x, y)) {
@@ -42,6 +44,7 @@ fn pathfind(input: &str, min: usize, max: usize) -> usize {
         }
         println!();
     }
+
     result.1 as usize
 }
 
