@@ -18,6 +18,13 @@ impl Rule {
             action,
         }
     }
+    pub fn is_valid(&self, part: usize) -> bool {
+        match self.op {
+            '<' => part < self.value,
+            '>' => part > self.value,
+            _ => panic!("Invalid operator"),
+        }
+    }
 }
 #[derive(Clone)]
 pub enum Action {

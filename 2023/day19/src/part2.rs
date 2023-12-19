@@ -1,36 +1,27 @@
 use std::array;
 
-use crate::types::Flow;
+use crate::types::{Action, Flow};
 
-fn count_accepted(flows: &[Flow], current: &str, mut ranges: [Vec<usize>; 4]) -> usize {
-    match current {
-        "R" => return 0,
-        "A" => return ranges.iter().map(|v| v.len()).product(),
-        _ => (),
+fn count_accepted(flows: &[Flow], current: &Action, mut ranges: [Vec<usize>; 4]) -> usize {
+    let name = match current {
+        Action::Rejected => return 0,
+        Action::Accepted => return ranges.iter().map(Vec::len).product(),
+        Action::Flow(name) => name,
     };
-    let mut count = 0;
-    let flow = flows.iter().find(|x| x.name == current).unwrap();
-    for rule in &flow.rules {
-        let i = "xmas".chars().position(|c| c == rule.part).unwrap();
-        let mut filtered = ranges.clone();
-        (filtered[i], ranges[i]) = ranges[i].iter().partition(|&&val| {
-            if rule.op == '<' {
-                val < rule.value
-            } else {
-                val > rule.value
-            }
-        });
-        count += count_accepted(flows, rule.action.as_ref(), filtered);
-    }
-    count += count_accepted(flows, flow.action.as_ref(), ranges);
-    count
+    let flow = flows.iter().find(|f| &f.name == name).unwrap();
+    flow.rules.iter().fold(0, |acc, rule| {
+        let index = "xmas".find(rule.part).unwrap();
+        let mut valid = ranges.clone();
+        (valid[index], ranges[index]) = ranges[index].iter().partition(|&&val| rule.is_valid(val));
+        acc + count_accepted(flows, &rule.action, valid)
+    }) + count_accepted(flows, &flow.action, ranges)
 }
 pub fn part2(input: &str) -> usize {
     let s = input.split_once("\n\n").unwrap();
     let flows = s.0.lines().map(Flow::new).collect::<Vec<_>>();
     count_accepted(
         &flows,
-        "in",
+        &Action::Flow("in".to_string()),
         array::from_fn(|_| (1..=4000).collect::<Vec<_>>()),
     )
 }
