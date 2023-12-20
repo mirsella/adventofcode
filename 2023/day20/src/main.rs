@@ -1,11 +1,8 @@
 use std::{
     any::Any,
-    borrow::BorrowMut,
     cell::{Cell, RefCell},
-    collections::{HashMap, HashSet, VecDeque},
-    iter,
-    ops::{Add, Index, Not},
-    rc::Rc,
+    collections::{HashMap, VecDeque},
+    ops::{Add, Not},
 };
 
 use num::integer::lcm;
@@ -40,7 +37,6 @@ impl From<bool> for Pulse {
         }
     }
 }
-type Modules<'a> = Vec<Box<dyn Module<'a>>>;
 type PulseResult<'a> = (Pulse, &'a [&'a str]);
 trait Module<'a> {
     fn pulse(&self, sender: &'a str, input: Pulse) -> PulseResult;
@@ -285,6 +281,7 @@ mod tests {
 &inv -> b
 %b -> con
 &con -> output";
+    const REALINPUT: &str = include_str!("../input.txt");
     #[test]
     fn part1() {
         assert_eq!(super::part1(INPUT), 8000 * 4000);
@@ -293,8 +290,12 @@ mod tests {
     fn part1_2() {
         assert_eq!(super::part1(INPUT2), 4250 * 2750);
     }
-    // #[test]
-    // fn part2() {
-    //     assert_eq!(super::part2(INPUT), 0);
-    // }
+    #[test]
+    fn part1_real() {
+        assert_eq!(super::part1(REALINPUT), 743090292);
+    }
+    #[test]
+    fn part2() {
+        assert_eq!(super::part2(REALINPUT), 241528184647003);
+    }
 }
