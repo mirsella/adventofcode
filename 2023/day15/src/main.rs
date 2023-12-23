@@ -1,5 +1,3 @@
-use std::{collections::HashMap, ops::Index};
-
 use indexmap::IndexMap;
 
 fn hash(input: &str) -> usize {
