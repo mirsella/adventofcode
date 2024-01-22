@@ -1,10 +1,10 @@
 # useless for now as it don't support multiline
 
-# [placeholders.input]
-# type = "string"
-# prompt = "main puzzle input"
-# regex = "[^ ]"
-#
+[placeholders.input]
+type = "string"
+prompt = "main puzzle input"
+regex = "[^ ]"
+
 # [placeholders.example]
 # type = "string"
 # prompt = "example input test case"
