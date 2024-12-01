@@ -1,16 +1,14 @@
-# useless for now as it don't support multiline
-
-[placeholders.input]
-type = "string"
-prompt = "main puzzle input"
+[placeholders.example]
+type = "text"
+prompt = "example input test case"
 regex = "[^ ]"
 
-# [placeholders.example]
-# type = "string"
-# prompt = "example input test case"
-# regex = "[^ ]"
-#
-# [placeholders.example_eq]
-# type = "string"
-# prompt = "example input equal to"
-# regex = "[0-9]+"
+[placeholders.example_eq]
+type = "string"
+prompt = "example input equal to"
+regex = "[0-9]+"
+
+[placeholders.input]
+type = "text"
+prompt = "main puzzle input"
+regex = "[^ ]"
