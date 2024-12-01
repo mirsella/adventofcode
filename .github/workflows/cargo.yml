@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        folder: [2023]
+        folder: [2023, 2024]
 
     steps:
       - uses: actions/checkout@v4
