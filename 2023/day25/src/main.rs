@@ -1,5 +1,3 @@
-use core::panic;
-use std::thread;
 use graphrs::{algorithms::community::louvain, Edge, Graph, GraphSpecs};
 
 fn part1(input: &str) -> usize {

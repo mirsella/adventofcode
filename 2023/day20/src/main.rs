@@ -1,5 +1,4 @@
 use std::{
-    any::Any,
     cell::{Cell, RefCell},
     collections::{HashMap, VecDeque},
     ops::{Add, Not},
@@ -41,7 +40,6 @@ type PulseResult<'a> = (Pulse, &'a [&'a str]);
 trait Module<'a> {
     fn pulse(&self, sender: &'a str, input: Pulse) -> PulseResult;
     fn name(&self) -> &'a str;
-    fn as_any(&self) -> &(dyn Any + 'a);
 }
 struct Broadcaster<'a> {
     outputs: Vec<&'a str>,
@@ -53,9 +51,6 @@ impl<'a> Module<'a> for Broadcaster<'a> {
     }
     fn name(&self) -> &'a str {
         self.name
-    }
-    fn as_any(&self) -> &(dyn Any + 'a) {
-        self
     }
 }
 impl<'a> Broadcaster<'a> {
@@ -72,9 +67,6 @@ impl<'a> Module<'a> for Dummy<'a> {
     }
     fn name(&self) -> &'a str {
         self.name
-    }
-    fn as_any(&self) -> &(dyn Any + 'a) {
-        self
     }
 }
 impl<'a> Dummy<'a> {
@@ -102,9 +94,6 @@ impl<'a> Module<'a> for Flipflop<'a> {
     fn name(&self) -> &'a str {
         self.name
     }
-    fn as_any(&self) -> &(dyn Any + 'a) {
-        self
-    }
 }
 impl<'a> Flipflop<'a> {
     fn new(name: &'a str, outputs: Vec<&'a str>) -> Self {
@@ -131,9 +120,6 @@ impl<'a> Module<'a> for Conjunction<'a> {
     }
     fn name(&self) -> &'a str {
         self.name
-    }
-    fn as_any(&self) -> &(dyn Any + 'a) {
-        self
     }
 }
 impl<'a> Conjunction<'a> {
@@ -166,7 +152,7 @@ fn new_module<'a>(
             inputs,
         ));
     }
-    return Box::new(Dummy::new(name));
+    Box::new(Dummy::new(name))
 }
 
 fn parse(input: &'static str) -> Vec<Box<dyn Module<'static> + 'static>> {
