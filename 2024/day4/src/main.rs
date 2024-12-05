@@ -4,12 +4,7 @@ use std::collections::HashSet;
 use std::iter;
 
 fn part1(input: &str) -> usize {
-    let m = Matrix::from_vec(
-        input.find('\n').unwrap(),
-        input.lines().count(),
-        input.chars().filter(|&c| c != '\n').collect_vec(),
-    )
-    .unwrap();
+    let m = Matrix::from_rows(input.lines().map(str::chars)).unwrap();
     let mut set = HashSet::new();
     for tile in m.keys() {
         for direction in DIRECTIONS_8 {
@@ -27,12 +22,7 @@ fn part1(input: &str) -> usize {
     set.len()
 }
 fn part2(input: &str) -> usize {
-    let m = Matrix::from_vec(
-        input.find('\n').unwrap(),
-        input.lines().count(),
-        input.chars().filter(|&c| c != '\n').collect_vec(),
-    )
-    .unwrap();
+    let m = Matrix::from_rows(input.lines().map(str::chars)).unwrap();
     let mut set = HashSet::new();
     for tile in m.keys() {
         for direction in [NE, NW, SE, SW] {
