@@ -1,10 +1,10 @@
 use itertools::Itertools;
-use std::collections::BTreeMap;
+use std::collections::HashMap;
 
 fn part1(input: &str) -> usize {
     let split = input.split_once("\n\n").unwrap();
     let ordering = {
-        let mut map = BTreeMap::<usize, Vec<usize>>::new();
+        let mut map = HashMap::<usize, Vec<usize>>::new();
         split.0.lines().for_each(|l| {
             let s = l.split_once('|').unwrap();
             map.entry(s.1.parse::<usize>().unwrap())
@@ -29,7 +29,7 @@ fn part1(input: &str) -> usize {
 fn part2(input: &str) -> usize {
     let split = input.split_once("\n\n").unwrap();
     let ordering = {
-        let mut map = BTreeMap::<usize, Vec<usize>>::new();
+        let mut map = HashMap::<usize, Vec<usize>>::new();
         split.0.lines().for_each(|l| {
             let s = l.split_once('|').unwrap();
             map.entry(s.1.parse::<usize>().unwrap())
