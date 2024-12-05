@@ -1,4 +1,3 @@
-use itertools::Itertools;
 use regex::Regex;
 
 fn part1(input: &str) -> usize {
