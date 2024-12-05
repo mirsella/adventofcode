@@ -7,9 +7,11 @@ fn part1(input: &str) -> usize {
         let mut map = HashMap::<usize, Vec<usize>>::new();
         split.0.lines().for_each(|l| {
             let s = l.split_once('|').unwrap();
+            let value = s.0.parse::<usize>().unwrap();
             map.entry(s.1.parse::<usize>().unwrap())
                 .or_default()
-                .push(s.0.parse::<usize>().unwrap());
+                .push(value);
+            map.entry(value).or_default();
         });
         map
     };
@@ -21,7 +23,7 @@ fn part1(input: &str) -> usize {
     updates
         .filter_map(|update| {
             update
-                .is_sorted_by(|a, b| ordering.get(b).map(|v| v.contains(a)).unwrap_or_default())
+                .is_sorted_by(|a, b| ordering[b].contains(a))
                 .then_some(update[update.len() / 2])
         })
         .sum()
@@ -32,9 +34,11 @@ fn part2(input: &str) -> usize {
         let mut map = HashMap::<usize, Vec<usize>>::new();
         split.0.lines().for_each(|l| {
             let s = l.split_once('|').unwrap();
+            let value = s.0.parse::<usize>().unwrap();
             map.entry(s.1.parse::<usize>().unwrap())
                 .or_default()
-                .push(s.0.parse::<usize>().unwrap());
+                .push(value);
+            map.entry(value).or_default();
         });
         map
     };
@@ -45,16 +49,8 @@ fn part2(input: &str) -> usize {
     });
     updates
         .filter_map(|mut update| {
-            if !update
-                .is_sorted_by(|a, b| ordering.get(b).map(|v| v.contains(a)).unwrap_or_default())
-            {
-                update.sort_by(|a, b| {
-                    ordering
-                        .get(b)
-                        .map(|v| v.contains(a))
-                        .unwrap_or_default()
-                        .cmp(&true)
-                });
+            if !update.is_sorted_by(|a, b| ordering[b].contains(a)) {
+                update.sort_by(|a, b| ordering[b].contains(a).cmp(&true));
                 return Some(update[update.len() / 2]);
             }
             None
