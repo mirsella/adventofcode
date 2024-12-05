@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@nightly
       - name: Create empty input.txt for compilation
         run: for d in ${{matrix.folder}}/day*; do touch $d/input.txt; done
       - name: Cargo Test
