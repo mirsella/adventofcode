@@ -21,7 +21,7 @@ fn part1(input: &str) -> usize {
     updates
         .filter_map(|update| {
             update
-                .is_sorted_by(|a, b| ordering.get(b).map(|v| v.contains(a)).unwrap_or(false))
+                .is_sorted_by(|a, b| ordering.get(b).map(|v| v.contains(a)).unwrap_or_default())
                 .then_some(update[update.len() / 2])
         })
         .sum()
