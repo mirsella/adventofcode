@@ -32,8 +32,8 @@ fn part1(input: &str) -> usize {
         .count()
 }
 
-// try to do it without bruteforce
-fn _part2_clever(input: &str) -> usize {
+// try to do it without bruteforce, but is wrong. gives 2019 instead of 2008
+fn part2_clever(input: &str) -> usize {
     let directions = [(N, '^'), (E, '>'), (S, 'v'), (W, '<')];
     let get_direction = |char: char| directions.iter().find(|(_, c)| char == *c).unwrap().0;
     let get_next_direction =
@@ -56,15 +56,13 @@ fn _part2_clever(input: &str) -> usize {
         } else {
             m[newpos] = m[pos];
             pos = newpos;
-            // if putting a obstruction at the new tile will make the guard join a path he already took
             let next_next_direction = get_next_direction(next_direction.1);
             for tile in m.in_direction(pos, get_next_direction(m[pos]).0) {
-                if m[tile] == next_direction.1
-                    || (m[tile] == next_next_direction.1
-                        && m[m.move_in_direction(tile, next_direction.0).unwrap()] == '#')
+                if m[tile] == next_next_direction.1
+                    && m[m.move_in_direction(tile, next_direction.0).unwrap()] == '#'
                 {
                     let move_in_direction = m.move_in_direction(pos, direction).unwrap();
-                    if move_in_direction != start {
+                    if move_in_direction != start && m[move_in_direction] != '#' {
                         possible_obstructions.insert(move_in_direction);
                     }
                     break;
@@ -72,16 +70,10 @@ fn _part2_clever(input: &str) -> usize {
             }
         }
     }
-    for pos in possible_obstructions.iter() {
-        m[*pos] = 'O'
-    }
-    for row in m.iter() {
-        println!("{}", row.iter().collect::<String>());
-    }
     possible_obstructions.len()
 }
 
-// bruteforce but thanks to rayon its still ~250ms to run
+// bruteforce but thanks to rayon its still really fast
 fn part2(input: &str) -> usize {
     let directions = [(N, '^'), (E, '>'), (S, 'v'), (W, '<')];
     let get_direction = |char: char| directions.iter().find(|(_, c)| char == *c).unwrap().0;
@@ -129,7 +121,10 @@ fn part2(input: &str) -> usize {
 fn main() {
     let input = include_str!("../input.txt");
     println!("Part 1: {}", part1(input));
-    println!("Part 2: {}", part2(input));
+    let p2 = part2(input);
+    println!("Part 2: {p2}");
+    assert_eq!(p2, 2008);
+    assert_eq!(p2, part2_clever(input));
 }
 
 #[cfg(test)]
@@ -151,6 +146,10 @@ mod tests {
     }
     #[test]
     fn part2() {
+        assert_eq!(super::part2(INPUT), 6);
+    }
+    #[test]
+    fn part2_clever() {
         assert_eq!(super::part2(INPUT), 6);
     }
 }
