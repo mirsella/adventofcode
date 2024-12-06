@@ -9,6 +9,6 @@ prompt = "example input equal to"
 regex = "[0-9]+"
 
 [placeholders.input]
-type = "text"
+type = "editor"
 prompt = "main puzzle input"
 regex = "[^ ]"
