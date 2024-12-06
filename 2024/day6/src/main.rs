@@ -74,6 +74,7 @@ fn part2_clever(input: &str) -> usize {
 }
 
 // bruteforce but thanks to rayon its still really fast
+// it can be much simpler, but i wanted to be able to visually debug the matrix if needed, so i modify the code directly
 fn part2(input: &str) -> usize {
     let directions = [(N, '^'), (E, '>'), (S, 'v'), (W, '<')];
     let get_direction = |char: char| directions.iter().find(|(_, c)| char == *c).unwrap().0;

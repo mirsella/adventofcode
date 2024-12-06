@@ -1,4 +1,3 @@
-use itertools::Itertools;
 use pathfinding::matrix::{directions::*, Matrix};
 use std::collections::HashSet;
 use std::iter;
