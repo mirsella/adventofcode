@@ -1,60 +1,54 @@
 use itertools::Itertools;
 
 fn part1(input: &str) -> usize {
-    let lines = input.lines().map(|l| {
-        let mut s = l
-            .split_whitespace()
-            .map(|s| s.trim_end_matches(':').parse::<usize>().unwrap());
-        (s.next().unwrap(), s.collect_vec())
-    });
-    fn try_operator(total: usize, values: &[usize], acc: usize) -> bool {
-        if (acc + values[0] == total || acc * values[0] == total) && values.len() == 1 {
-            return true;
-        }
-        if values.len() > 1 {
-            if try_operator(total, &values[1..], acc + values[0]) {
-                return true;
+    input
+        .lines()
+        .filter_map(|l| {
+            let mut s = l
+                .split_whitespace()
+                .map(|s| s.trim_end_matches(':').parse::<usize>().unwrap());
+            let total = s.next().unwrap();
+            let values = s.collect_vec();
+            fn try_operator(total: usize, values: &[usize], acc: usize) -> bool {
+                let add = values[0] + acc;
+                let mul = values[0] * acc;
+                match values.len() {
+                    1 => add == total || mul == total,
+                    _ => {
+                        try_operator(total, &values[1..], add)
+                            || try_operator(total, &values[1..], mul)
+                    }
+                }
             }
-            if try_operator(total, &values[1..], acc * values[0]) {
-                return true;
-            }
-        }
-        false
-    }
-    lines
-        .filter_map(|(total, values)| try_operator(total, &values[1..], values[0]).then_some(total))
+            try_operator(total, &values[1..], values[0]).then_some(total)
+        })
         .sum()
 }
 
 fn part2(input: &str) -> usize {
-    let lines = input.lines().map(|l| {
-        let mut s = l
-            .split_whitespace()
-            .map(|s| s.trim_end_matches(':').parse::<usize>().unwrap());
-        (s.next().unwrap(), s.collect_vec())
-    });
-    fn try_operator(total: usize, values: &[usize], acc: usize) -> bool {
-        let add = values[0] + acc;
-        let mul = values[0] * acc;
-        let concat = format!("{}{}", acc, values[0]).parse::<usize>().unwrap();
-        if (add == total || mul == total || concat == total) && values.len() == 1 {
-            return true;
-        }
-        if values.len() > 1 {
-            if try_operator(total, &values[1..], add) {
-                return true;
+    input
+        .lines()
+        .filter_map(|l| {
+            let mut s = l
+                .split_whitespace()
+                .map(|s| s.trim_end_matches(':').parse::<usize>().unwrap());
+            let total = s.next().unwrap();
+            let values = s.collect_vec();
+            fn try_operator(total: usize, values: &[usize], acc: usize) -> bool {
+                let add = values[0] + acc;
+                let mul = values[0] * acc;
+                let concat = format!("{}{}", acc, values[0]).parse::<usize>().unwrap();
+                match values.len() {
+                    1 => add == total || mul == total || concat == total,
+                    _ => {
+                        try_operator(total, &values[1..], add)
+                            || try_operator(total, &values[1..], mul)
+                            || try_operator(total, &values[1..], concat)
+                    }
+                }
             }
-            if try_operator(total, &values[1..], mul) {
-                return true;
-            }
-            if try_operator(total, &values[1..], concat) {
-                return true;
-            }
-        }
-        false
-    }
-    lines
-        .filter_map(|(total, values)| try_operator(total, &values[1..], values[0]).then_some(total))
+            try_operator(total, &values[1..], values[0]).then_some(total)
+        })
         .sum()
 }
 
