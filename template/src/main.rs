@@ -1,9 +1,11 @@
 fn part1(input: &str) -> usize {
     todo!()
 }
+
 fn part2(input: &str) -> usize {
     todo!()
 }
+
 fn main() {
     let input = include_str!("../input.txt");
     println!("Part 1: {}", part1(input));
