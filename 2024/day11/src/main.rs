@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use hashbrown::HashMap;
 
 fn part(input: &str, count: u64) -> u64 {
     let mut stones = input

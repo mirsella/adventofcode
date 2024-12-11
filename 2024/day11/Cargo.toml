@@ -12,3 +12,4 @@ itertools = { workspace = true }
 pathfinding = { workspace = true }
 rayon = { workspace = true }
 indexmap = { workspace = true }
+hashbrown = { workspace = true }
