@@ -13,3 +13,4 @@ pathfinding = { workspace = true }
 rayon = { workspace = true }
 indexmap = { workspace = true }
 hashbrown = { workspace = true }
+fix_fn = { workspace = true }
