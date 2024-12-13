@@ -2,9 +2,9 @@ use regex::Regex;
 
 #[derive(Debug)]
 struct Machine {
-    pub a: (usize, usize),
-    pub b: (usize, usize),
-    pub prize: (usize, usize),
+    pub a: (i64, i64),
+    pub b: (i64, i64),
+    pub prize: (i64, i64),
 }
 
 impl Machine {
@@ -27,12 +27,50 @@ Prize: X=(\d+), Y=(\d+)",
     }
 }
 
-fn solve_integer(ax: isize, ay: isize, bx: isize, by: isize, tx: isize, ty: isize) -> usize {
+// working for part1, but not for big number like part2 🤷 float imprecision ?
+fn _solve_with_good_lp(
+    Machine {
+        a: (ax, ay),
+        b: (bx, by),
+        prize: (tx, ty),
+    }: Machine,
+) -> Option<u64> {
+    use good_lp::*;
+    variables! {
+        vars:
+            a (integer) >= 0;
+            b (integer) >= 0;
+    }
+    let model = vars
+        .minimise(a + b)
+        .using(default_solver)
+        .with(constraint!(a * ax as f64 + b * bx as f64 == tx as f64))
+        .with(constraint!(a * ay as f64 + b * by as f64 == ty as f64));
+
+    let solution = match model.solve() {
+        Ok(sol) => sol,
+        Err(_) => return None,
+    };
+
+    let a_val = solution.value(a);
+    let b_val = solution.value(b);
+
+    Some(a_val.round() as u64 * 3 + b_val.round() as u64)
+}
+
+// fn solve_integer(ax: isize, ay: isize, bx: isize, by: isize, tx: isize, ty: isize) -> usize {
+fn calculate(
+    Machine {
+        a: (ax, ay),
+        b: (bx, by),
+        prize: (tx, ty),
+    }: Machine,
+) -> usize {
     // (thanks google)
     // calculate b using the derived formula:
     // given the system:
-    //   a*ax + b*ay = tx
-    //   a*bx + b*by = ty
+    //   a*ax + b*bx = tx
+    //   a*ay + b*by = ty
     // after elimination, we get:
     //   b = (ty*ax - tx*ay) / (by*ax - bx*ay)
     let b = (ty * ax - tx * ay) / (by * ax - bx * ay);
@@ -48,61 +86,19 @@ fn solve_integer(ax: isize, ay: isize, bx: isize, by: isize, tx: isize, ty: isiz
     a as usize * 3 + b as usize
 }
 
-// not working 🤷
-fn _solve_with_good_lp(ax: f64, ay: f64, bx: f64, by: f64, tx: f64, ty: f64) -> Option<u64> {
-    use good_lp::*;
-    variables! {
-        vars:
-            a (integer) >= 0;
-            b (integer) >= 0;
-    }
-    let model = vars
-        .minimise(a + b)
-        .using(default_solver)
-        .with(constraint!(a * ax + b * bx == tx))
-        .with(constraint!(a * ay + b * by == ty));
-
-    let solution = match model.solve() {
-        Ok(sol) => sol,
-        Err(_) => return None,
-    };
-
-    let a_val = solution.value(a);
-    let b_val = solution.value(b);
-
-    Some(a_val.round() as u64 * 3 + b_val.round() as u64)
-}
-
 fn part1(input: &str) -> usize {
-    let machines = Machine::from_list(input);
-    let mut used = 0;
-    for Machine { a, b, prize } in machines {
-        used += solve_integer(
-            a.0 as isize,
-            a.1 as isize,
-            b.0 as isize,
-            b.1 as isize,
-            prize.0 as isize,
-            prize.1 as isize,
-        );
-    }
-    used
+    Machine::from_list(input).into_iter().map(calculate).sum()
 }
 
 fn part2(input: &str) -> usize {
-    let machines = Machine::from_list(input);
-    let mut used = 0;
-    for Machine { a, b, prize } in machines {
-        used += solve_integer(
-            a.0 as isize,
-            a.1 as isize,
-            b.0 as isize,
-            b.1 as isize,
-            prize.0 as isize + 10000000000000,
-            prize.1 as isize + 10000000000000,
-        );
-    }
-    used
+    Machine::from_list(input)
+        .into_iter()
+        .map(|mut m| {
+            m.prize.0 += 10000000000000;
+            m.prize.1 += 10000000000000;
+            calculate(m)
+        })
+        .sum()
 }
 
 fn main() {
@@ -134,6 +130,6 @@ Prize: X=18641, Y=10279";
     }
     #[test]
     fn part2() {
-        assert_eq!(super::part2(INPUT), 100);
+        assert_eq!(super::part2(INPUT), 875318608908);
     }
 }
